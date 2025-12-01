@@ -5,7 +5,8 @@ const slides = [
         text: "Alicia estaba junto al río, aburrida. ¡Qué fastidio un libro sin dibujos! Justo entonces, ¡algo inesperado pasó!",
         imageDesc: "Alicia y su hermana bajo un árbol a la orilla del río (colores suaves).",
         interaction: "Tocar el libro de la hermana hace que Alicia suspire y aparezca una burbuja de 'Aburrimiento'.",
-        imagePath: "slide_01.png"
+        imagePath: "slide_01.png",
+        gifPath: "Slide_01.gif"
     },
     {
         id: 2,
@@ -233,7 +234,9 @@ function renderSlide(index) {
             </div>
             <div class="page right">
                 <div class="image-content">
-                    <img src="${slide.imagePath}" alt="${slide.imageDesc}" class="slide-image" onerror="this.src='https://placehold.co/800x600/f4e4bc/5d4037?text=Imagen+No+Disponible&font=serif'">
+                    <img src="${slide.imagePath}" alt="${slide.imageDesc}" class="slide-image" 
+                         style="${slide.gifPath ? 'cursor: pointer;' : ''}"
+                         onerror="this.src='https://placehold.co/800x600/f4e4bc/5d4037?text=Imagen+No+Disponible&font=serif'">
                 </div>
                 <div class="page-number">${index + 1}</div>
             </div>
@@ -267,13 +270,23 @@ nextBtn.addEventListener('click', () => {
     }
 });
 
-// Event delegation for dynamic speak button
+// Event delegation for dynamic speak button and GIF interaction
 document.addEventListener('click', (e) => {
+    // Speak button
     if (e.target.closest('#speak-btn-dynamic')) {
         if (synth.speaking) {
             stopSpeaking();
         } else {
             speakText(slides[currentSlideIndex].text);
+        }
+    }
+
+    // Image click for GIF
+    if (e.target.classList.contains('slide-image')) {
+        const slide = slides[currentSlideIndex];
+        if (slide.gifPath) {
+            // Swap src to GIF
+            e.target.src = slide.gifPath;
         }
     }
 });
