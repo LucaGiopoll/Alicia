@@ -5,8 +5,8 @@ const slides = [
         text: "Alicia estaba junto al río, aburrida. ¡Qué fastidio un libro sin dibujos! Justo entonces, ¡algo inesperado pasó!",
         imageDesc: "Alicia y su hermana bajo un árbol a la orilla del río (colores suaves).",
         interaction: "Tocar el libro de la hermana hace que Alicia suspire y aparezca una burbuja de 'Aburrimiento'.",
-        imagePath: "slide_01.png",
-        gifPath: "Slide_01.gif"
+        imagePath: "Slide_01.jpg",
+        videoPath: "Slide_01.mp4"
     },
     {
         id: 2,
@@ -14,7 +14,8 @@ const slides = [
         text: "Un Conejo Blanco pasó corriendo, mirando su reloj. '¡Voy muy tarde!', gritó. ¡Alicia se lanzó al oscuro pozo sin pensarlo!",
         imageDesc: "El Conejo vestido corriendo hacia el agujero. Alicia cerca del borde, mirando hacia abajo.",
         interaction: "Tocar el reloj del Conejo hace que suene una campanilla.",
-        imagePath: "slide_02.png"
+        imagePath: "Slide_02.jpg",
+        videoPath: "Slide_02.mp4"
     },
     {
         id: 3,
@@ -22,7 +23,8 @@ const slides = [
         text: "Aterrizó en un pasillo. Encontró una llave diminuta y una puerta tan pequeña que solo podía mirar por ella.",
         imageDesc: "Alicia en el pasillo con la pequeña puerta a sus pies. Mira a través de la cerradura.",
         interaction: "Tocar la puerta hace que su pomo haga una mueca graciosa.",
-        imagePath: "slide_03.png"
+        imagePath: "Slide_03.jpg",
+        videoPath: "Slide_03.mp4"
     },
     {
         id: 4,
@@ -30,7 +32,8 @@ const slides = [
         text: "El frasco 'BÉBEME' la encogió. Pero la llave quedó muy alta. Luego el pastel 'CÓMEME' la hizo crecer gigante.",
         imageDesc: "Alicia, ahora gigante, con la cabeza tocando el techo, mira la llave diminuta en el suelo.",
         interaction: "Tocar la cabeza de Alicia hace temblar el techo.",
-        imagePath: "slide_04.png"
+        imagePath: "Slide_04.jpg",
+        videoPath: "Slide_04.mp4"
     },
     {
         id: 5,
@@ -235,7 +238,7 @@ function renderSlide(index) {
             <div class="page right">
                 <div class="image-content">
                     <img src="${slide.imagePath}" alt="${slide.imageDesc}" class="slide-image" 
-                         style="${slide.gifPath ? 'cursor: pointer;' : ''}"
+                         style="${slide.videoPath ? 'cursor: pointer;' : ''}"
                          onerror="this.src='https://placehold.co/800x600/f4e4bc/5d4037?text=Imagen+No+Disponible&font=serif'">
                 </div>
                 <div class="page-number">${index + 1}</div>
@@ -281,12 +284,30 @@ document.addEventListener('click', (e) => {
         }
     }
 
-    // Image click for GIF
+    // Image click for Video
     if (e.target.classList.contains('slide-image')) {
         const slide = slides[currentSlideIndex];
-        if (slide.gifPath) {
-            // Swap src to GIF
-            e.target.src = slide.gifPath;
+        if (slide.videoPath) {
+            const container = e.target.parentElement;
+
+            // Avoid creating multiple videos if clicked again
+            if (container.querySelector('video')) return;
+
+            const video = document.createElement('video');
+            video.src = slide.videoPath;
+            video.className = 'slide-image';
+            video.autoplay = true;
+            video.controls = false; // Clean look, click to play/pause
+
+            // Replace image with video
+            container.innerHTML = '';
+            container.appendChild(video);
+
+            // Optional: Toggle play/pause on click
+            video.addEventListener('click', () => {
+                if (video.paused) video.play();
+                else video.pause();
+            });
         }
     }
 });
